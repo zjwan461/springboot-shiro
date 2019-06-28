@@ -32,6 +32,8 @@ public class CustomController {
     public String subToLogin(User user) {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), user.getPassword());
+        if (user.isRememberMe())
+            token.setRememberMe(true);
         subject.login(token);
         return "登陆成功";
     }

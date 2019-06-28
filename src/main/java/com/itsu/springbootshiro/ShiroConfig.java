@@ -7,7 +7,9 @@ import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +54,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login.do", "anon");
         filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/", "user");
         filterChainDefinitionMap.put("/**", "authc");
         //配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
         shiroFilterFactoryBean.setLoginUrl("/login");
@@ -66,7 +69,23 @@ public class ShiroConfig {
         securityManager.setRealm(initCustomRealm());
         securityManager.setSessionManager(initSessionManager());
         securityManager.setCacheManager(initCacheManager());
+        securityManager.setRememberMeManager(initRemeberMeManager());
         return securityManager;
+    }
+
+    @Bean
+    public CookieRememberMeManager initRemeberMeManager() {
+        CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
+        rememberMeManager.setCookie(initSimpleCookie());
+        return rememberMeManager;
+    }
+
+    @Bean
+    public SimpleCookie initSimpleCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie();
+        simpleCookie.setMaxAge(20000);
+        simpleCookie.setName("rememberMe");
+        return simpleCookie;
     }
 
     @Bean
