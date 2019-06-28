@@ -1,0 +1,38 @@
+server:
+  port: 8080
+spring:
+  mvc:
+    date-format: yyyy-MM-dd
+    static-path-pattern: /static/**
+  freemarker:
+    cache: false
+    charset: utf-8
+    content-type: text/html
+    request-context-attribute: request
+    suffix: .html
+    settings:
+      template_update_delay: 1
+      default_encoding: UTF-8
+#      template_exception_handler: com.itsu.springbootmybatis.handler.FreemarkerExceptionHandler
+      datetime_format: yyyy-MM-dd hh:mm:ss
+      tag_syntax: auto_detect
+      boolean_format: true,false
+      whitespace_stripping: true
+      time_format: hh:mm:ss
+      classic_compatible: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/local_db?useSSL=false&useUnicode=true&amp;characterEncoding=UTF-8
+    username: root
+    password: 123456
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mappers/*.xml
+logging:
+  pattern:
+    console: "%d - %msg%n"
+  level:
+    root: info
