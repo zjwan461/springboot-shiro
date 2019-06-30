@@ -3,6 +3,7 @@ package com.itsu.springbootshiro.shiro.realm;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.springbootshiro.entity.User;
 import com.itsu.springbootshiro.mapper.UserMapper;
+import com.itsu.springbootshiro.util.ByteSourceUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,7 +12,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class CustomRealm extends AuthorizingRealm {
         if (user == null || user.getPassword() == null || !"0".equals(user.getStatus())) {
             return null;
         }
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName, user.getPassword(), ByteSource.Util.bytes(user.getUserName()), getName());
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName, user.getPassword(), ByteSourceUtil.bytes(user.getUserName()), getName());
         return authenticationInfo;
     }
 

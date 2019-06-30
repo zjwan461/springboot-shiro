@@ -32,7 +32,8 @@ spring:
     port: 6379
     database: 0
     password: 123456
-    host: 182.61.43.241
+    #这里应该写自己的redis服务器地址
+    host: xxx.xx.xx.xxx
     jedis:
       pool:
         max-active: 10

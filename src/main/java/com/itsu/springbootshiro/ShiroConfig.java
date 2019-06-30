@@ -1,5 +1,6 @@
 package com.itsu.springbootshiro;
 
+import com.itsu.springbootshiro.shiro.cache.RedisCacheManager;
 import com.itsu.springbootshiro.shiro.realm.CustomRealm;
 import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -47,7 +48,7 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean initShiroFilterFactory() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setLoginUrl("/login");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/error/unauthen");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/error/500");
         shiroFilterFactoryBean.setSecurityManager(initSecurityManager());
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         //注意过滤器配置顺序 不能颠倒
@@ -71,7 +72,8 @@ public class ShiroConfig {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(initCustomRealm());
         securityManager.setSessionManager(initSessionManager());
-        securityManager.setCacheManager(initCacheManager());
+//        securityManager.setCacheManager(initCacheManager());
+        securityManager.setCacheManager(initRedisCacheManager());
         securityManager.setRememberMeManager(initRemeberMeManager());
         return securityManager;
     }
@@ -136,4 +138,12 @@ public class ShiroConfig {
         MemoryConstrainedCacheManager cacheManager = new MemoryConstrainedCacheManager();
         return cacheManager;
     }
+
+    @Bean
+    public RedisCacheManager initRedisCacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        return redisCacheManager;
+    }
+
+
 }

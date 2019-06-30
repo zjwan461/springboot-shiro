@@ -22,16 +22,17 @@ public class RedisSessionDao extends AbstractSessionDAO {
     @Resource
     private RedisUtil redisUtil;
 
-    public static final String KEY_PREFIX = "shiro:session";
+    public static final String KEY_PREFIX = "shiro:session:";
 
     public void saveSession(Session session) {
         if (session != null && session.getId() != null) {
             redisUtil.set(getKey(session.getId().toString()), SerializationUtils.serialize(session));
+            redisUtil.expir(getKey(session.getId().toString()), 1800);
         }
     }
 
     private String getKey(String key) {
-        return KEY_PREFIX + ":" + key;
+        return KEY_PREFIX + key;
     }
 
     @Override

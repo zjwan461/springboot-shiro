@@ -38,10 +38,17 @@ public class CustomController {
         return "登陆成功";
     }
 
-    @RequiresRoles({"admin1"})
+    @RequiresRoles({"admin"})
     @GetMapping("/testRole")
     @ResponseBody
     public String testRole() {
         return "有admin角色";
+    }
+
+    @RequiresRoles({"admin1"})
+    @GetMapping("/testRole1")
+    @ResponseBody
+    public String testRole1() {
+        return "有admin1角色";
     }
 }
