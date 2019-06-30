@@ -5,8 +5,13 @@
     <title>500</title>
 </head>
 <body>
-${code}
-<br>
-${msg}
+<div style="text-align: center;">
+    <h3>Error Code : ${status!}</h3>
+    <p>Error : ${error!}</p>
+    <p>Path : ${path!}</p>
+    <p>exception : ${exception!"java.lang.RuntimeException"}</p>
+    <p>message : ${message!}</p>
+    <p>Timestamp : ${timestamp?string('yyyy-MM-dd HH:mm:ss')}</p>
+</div>
 </body>
 </html>
