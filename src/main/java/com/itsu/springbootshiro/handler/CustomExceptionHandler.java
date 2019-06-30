@@ -21,6 +21,7 @@ import java.util.Map;
 /**
  * @author 苏犇
  * @date 2019/6/30 2:29
+ * 自定义全局异常捕获
  */
 @ControllerAdvice
 public class CustomExceptionHandler {
