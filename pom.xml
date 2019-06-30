@@ -80,6 +80,11 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.yugabyte</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0-yb-11</version>
+        </dependency>
 
     </dependencies>
 

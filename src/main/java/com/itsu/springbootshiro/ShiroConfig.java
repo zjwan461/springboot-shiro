@@ -1,6 +1,7 @@
 package com.itsu.springbootshiro;
 
 import com.itsu.springbootshiro.shiro.realm.CustomRealm;
+import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
@@ -28,13 +29,15 @@ public class ShiroConfig {
     public LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
+
     /**
      * 开启shiro注解
+     *
      * @param
      * @return
      */
     @Bean
-    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(){
+    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor() {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(initSecurityManager());
         return authorizationAttributeSourceAdvisor;
@@ -109,16 +112,23 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSessionManager initSessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setSessionDAO(initSessionDao());
+//        sessionManager.setSessionDAO(initSessionDao());
+        sessionManager.setSessionDAO(initRedisSessionDao());
         sessionManager.setGlobalSessionTimeout(360000);
         sessionManager.setDeleteInvalidSessions(true);
         return sessionManager;
     }
 
-    @Bean
+    @Bean(name = "memorySessionDao")
     public MemorySessionDAO initSessionDao() {
         MemorySessionDAO sessionDAO = new MemorySessionDAO();
         return sessionDAO;
+    }
+
+    @Bean(name = "RedisSessionDao")
+    public RedisSessionDao initRedisSessionDao() {
+        RedisSessionDao redisSessionDao = new RedisSessionDao();
+        return redisSessionDao;
     }
 
     @Bean

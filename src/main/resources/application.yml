@@ -13,7 +13,7 @@ spring:
     settings:
       template_update_delay: 1
       default_encoding: UTF-8
-#      template_exception_handler: com.itsu.springbootmybatis.handler.FreemarkerExceptionHandler
+      #      template_exception_handler: com.itsu.springbootmybatis.handler.FreemarkerExceptionHandler
       datetime_format: yyyy-MM-dd hh:mm:ss
       tag_syntax: auto_detect
       boolean_format: true,false
@@ -28,11 +28,24 @@ spring:
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    port: 6379
+    database: 0
+    password: 123456
+    host: 182.61.43.241
+    jedis:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+        max-wait: 1000ms
 mybatis:
   config-location: classpath:mybatis-config.xml
   mapper-locations: classpath:mappers/*.xml
 logging:
   pattern:
-    console: "%d - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%thread] %logger{30} - %msg%n"
   level:
     root: info
+#  https://www.cnblogs.com/zeng1994/p/03303c805731afc9aa9c60dbbd32a323.html springboot + redis 自定义serilizatier 序列化工具
+
