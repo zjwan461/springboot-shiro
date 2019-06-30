@@ -121,6 +121,11 @@ public class ShiroConfig {
         return sessionManager;
     }
 
+    /**
+     * 内存存储session，底层就是一个ConcurrentHashMap
+     * 也可以自己实现。 如果不想使用redis 存储session，可以用这个sessionDAO
+     * @return
+     */
     @Bean(name = "memorySessionDao")
     public MemorySessionDAO initSessionDao() {
         MemorySessionDAO sessionDAO = new MemorySessionDAO();
@@ -133,6 +138,11 @@ public class ShiroConfig {
         return redisSessionDao;
     }
 
+    /**
+     * 内存缓存，底层就是一个ConcurrentHashMap
+     * 也可以自己实现。如果不想使用redis 存储cache，可以用这个cachemanager
+     * @return
+     */
     @Bean
     public MemoryConstrainedCacheManager initCacheManager() {
         MemoryConstrainedCacheManager cacheManager = new MemoryConstrainedCacheManager();
