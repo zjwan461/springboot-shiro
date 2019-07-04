@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
-<mapper namespace="com.itsu.springbootshiro.mapper">
+<mapper namespace="com.itsu.springbootshiro.mapper.UserMapper">
+    <cache readOnly="true" flushInterval="600000" eviction="LRU" size="100"/>
+    <resultMap id="userMap" type="com.itsu.springbootshiro.entity.User">
+        <id property="uid" column="uid"/>
+        <result property="userName" column="user_name"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <collection property="role" column="rid" ofType="com.itsu.springbootshiro.entity.Role">
+            <id property="rid" column="rid"/>
+            <result property="roleName" column="role_name"/>
+            <result property="status" column="status"/>
+            <collection property="perms" javaType="java.util.List" ofType="com.itsu.springbootshiro.entity.Perm">
+                <id property="permId" column="perm_id"/>
+                <result property="permName" column="perm_name"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getUserRolePermByUsername" parameterType="java.lang.String" resultMap="userMap">
+        SELECT
+        tb_user.uid,
+        tb_user.user_name,
+        tb_user.`password`,
+        tb_user.`status`,
+        tb_role.rid,
+        tb_role.role_name,
+        tb_role.`status`,
+        tb_perm.perm_id,
+        tb_perm.perm_name
+        FROM
+        tb_user
+        JOIN tb_role ON tb_user.rid = tb_role.rid
+        JOIN tb_role_perm ON tb_role.rid = tb_role_perm.rid
+        JOIN tb_perm ON tb_perm.perm_id = tb_role_perm.perm_id
+        where
+        tb_user.user_name = #{userName}
+    </select>
 
 </mapper>

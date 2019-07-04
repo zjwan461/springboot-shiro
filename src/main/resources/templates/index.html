@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <title>index</title>
 </head>
-<body>
-welcome
+<body style="text-align: center">
+<h2>欢迎访问主页</h2>
+<div id="loginUserInfo">
+    <p>用户名：${Session.loginUser.userName!}</p>
+    <p>状态码：${Session.loginUser.status!}</p>
+    <p>角色名：${Session.loginUser.role.roleName!}</p>
+</div>
+<@shiro.hasRole name="超级管理员">
+    <a href="/session/all">管理已登陆用户</a>
+</@shiro.hasRole>
+<a href="/logout">退出</a>
 </body>
 </html>

@@ -75,7 +75,7 @@ public class CustomExceptionHandler {
             view.addObject("error", DEFAULT_ERROR_MSG);
             view.addObject("path", request.getRequestURI());
             view.addObject("exception", e.getClass().getName());
-            view.addObject("timestamp", new Date().getTime());
+            view.addObject("timestamp", new Date());
             return view;
         }
     }

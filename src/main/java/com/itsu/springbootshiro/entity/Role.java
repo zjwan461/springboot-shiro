@@ -6,22 +6,21 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author 苏犇
- * @date 2019/6/27 23:35
+ * @date 2019/7/4 22:15
  */
 @Data
-@TableName("tb_user")
-public class User implements Serializable {
-    private static final long serialVersionUID = -6061351457244160069L;
+@TableName("tb_role")
+public class Role implements Serializable {
+    private static final long serialVersionUID = -8179962714461276909L;
     @TableId
-    private int uid;
-    private String userName;
-    private String password;
+    private int rid;
+    private String roleName;
     private String status;
+
     @TableField(exist = false)
-    private boolean rememberMe;
-    @TableField(exist = false)
-    private Role role;
+    List<Perm> perms;
 }

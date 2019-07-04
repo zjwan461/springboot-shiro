@@ -9,4 +9,7 @@ import com.itsu.springbootshiro.entity.User;
  */
 
 public interface UserMapper extends BaseMapper<User> {
+
+    User getUserRolePermByUsername(String userName);
+
 }

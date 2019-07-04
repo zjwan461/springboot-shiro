@@ -1,6 +1,7 @@
 package com.itsu.springbootshiro;
 
 import com.itsu.springbootshiro.shiro.cache.RedisCacheManager;
+import com.itsu.springbootshiro.shiro.filter.UserSessionFilter;
 import com.itsu.springbootshiro.shiro.realm.CustomRealm;
 import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -16,6 +17,8 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,6 +53,9 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setLoginUrl("/login");
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/500");
         shiroFilterFactoryBean.setSecurityManager(initSecurityManager());
+        //配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
+        shiroFilterFactoryBean.setLoginUrl("/login");
+
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         //注意过滤器配置顺序 不能颠倒
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了，登出后跳转配置的loginUrl
@@ -58,13 +64,18 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login.do", "anon");
         filterChainDefinitionMap.put("/login", "anon");
-        filterChainDefinitionMap.put("/", "user");
-        filterChainDefinitionMap.put("/**", "authc");
-        //配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
-        shiroFilterFactoryBean.setLoginUrl("/login");
-
+        filterChainDefinitionMap.put("/**", "user,sessionFilter");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+
+        Map<String, Filter> filterMap = new HashMap<>();
+        filterMap.put("sessionFilter", initSessionFilter());
+        shiroFilterFactoryBean.setFilters(filterMap);
         return shiroFilterFactoryBean;
+    }
+
+    @Bean
+    public UserSessionFilter initSessionFilter() {
+        return new UserSessionFilter();
     }
 
     @Bean
@@ -124,6 +135,7 @@ public class ShiroConfig {
     /**
      * 内存存储session，底层就是一个ConcurrentHashMap
      * 也可以自己实现。 如果不想使用redis 存储session，可以用这个sessionDAO
+     *
      * @return
      */
     @Bean(name = "memorySessionDao")
@@ -132,7 +144,7 @@ public class ShiroConfig {
         return sessionDAO;
     }
 
-    @Bean(name = "RedisSessionDao")
+    @Bean(name = "redisSessionDao")
     public RedisSessionDao initRedisSessionDao() {
         RedisSessionDao redisSessionDao = new RedisSessionDao();
         return redisSessionDao;
@@ -141,6 +153,7 @@ public class ShiroConfig {
     /**
      * 内存缓存，底层就是一个ConcurrentHashMap
      * 也可以自己实现。如果不想使用redis 存储cache，可以用这个cachemanager
+     *
      * @return
      */
     @Bean

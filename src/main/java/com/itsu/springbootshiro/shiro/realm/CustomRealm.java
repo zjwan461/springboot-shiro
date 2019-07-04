@@ -1,6 +1,6 @@
 package com.itsu.springbootshiro.shiro.realm;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.itsu.springbootshiro.entity.Perm;
 import com.itsu.springbootshiro.entity.User;
 import com.itsu.springbootshiro.mapper.UserMapper;
 import com.itsu.springbootshiro.util.ByteSourceUtil;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,6 +31,8 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Resource
     private UserMapper userMapper;
+
+    private User user;
 
     /**
      * 授权
@@ -48,18 +51,18 @@ public class CustomRealm extends AuthorizingRealm {
 
     private Set<String> getPermissionsByUserName(String userName) {
         Set<String> perms = new HashSet<>();
-        perms.add("user:delete");
-        perms.add("user:add");
-        perms.add("user:update");
-        perms.add("user:select");
+        List<Perm> permsFromDB = user.getRole().getPerms();
+        permsFromDB.forEach(perm -> {
+            perms.add(perm.getPermName());
+        });
         return perms;
     }
 
     private Set<String> getRolesByUserName(String userName) {
 
         Set<String> roles = new HashSet<>();
-        roles.add("admin");
-        roles.add("user");
+        String roleName = user.getRole().getRoleName();
+        roles.add(roleName);
         return roles;
     }
 
@@ -83,10 +86,8 @@ public class CustomRealm extends AuthorizingRealm {
     }
 
     private User getUserByUserName(String userName) {
-        logger.info("从数据库中获取认证信息");
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_name", userName);
-        User user = userMapper.selectOne(wrapper);
+        User user = userMapper.getUserRolePermByUsername(userName);
+        this.user = user;
         return user;
     }
 
