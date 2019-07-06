@@ -1,4 +1,4 @@
-package com.itsu.springbootshiro.shiro.sessiondao;
+package com.itsu.springbootshiro.shiro.session;
 
 import com.itsu.springbootshiro.util.RedisUtil;
 import org.apache.shiro.session.Session;

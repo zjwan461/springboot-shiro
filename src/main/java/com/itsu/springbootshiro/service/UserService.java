@@ -2,7 +2,7 @@ package com.itsu.springbootshiro.service;
 
 import com.itsu.springbootshiro.entity.User;
 import com.itsu.springbootshiro.mapper.UserMapper;
-import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
+import com.itsu.springbootshiro.shiro.session.RedisSessionDao;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,8 @@ package com.itsu.springbootshiro;
 import com.itsu.springbootshiro.shiro.cache.RedisCacheManager;
 import com.itsu.springbootshiro.shiro.filter.UserSessionFilter;
 import com.itsu.springbootshiro.shiro.realm.CustomRealm;
-import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
+import com.itsu.springbootshiro.shiro.session.RedisSessionDao;
+import com.itsu.springbootshiro.shiro.session.RedisSessionManager;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
@@ -82,6 +83,7 @@ public class ShiroConfig {
     public DefaultWebSecurityManager initSecurityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(initCustomRealm());
+//        securityManager.setSessionManager(initRedisSessionManager());
         securityManager.setSessionManager(initSessionManager());
 //        securityManager.setCacheManager(initCacheManager());
         securityManager.setCacheManager(initRedisCacheManager());
@@ -123,10 +125,18 @@ public class ShiroConfig {
     }
 
     @Bean
+    public RedisSessionManager initRedisSessionManager() {
+        RedisSessionManager redisSessionManager = new RedisSessionManager();
+        redisSessionManager.setGlobalSessionTimeout(360000);
+        redisSessionManager.setDeleteInvalidSessions(true);
+        redisSessionManager.setSessionDAO(initRedisSessionDao());
+        return redisSessionManager;
+    }
+
+    @Bean
     public DefaultWebSessionManager initSessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-//        sessionManager.setSessionDAO(initSessionDao());
-        sessionManager.setSessionDAO(initRedisSessionDao());
+        sessionManager.setSessionDAO(initSessionDao());
         sessionManager.setGlobalSessionTimeout(360000);
         sessionManager.setDeleteInvalidSessions(true);
         return sessionManager;

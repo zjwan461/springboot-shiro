@@ -2,7 +2,7 @@ package com.itsu.springbootshiro.shiro.filter;
 
 import com.itsu.springbootshiro.entity.User;
 import com.itsu.springbootshiro.mapper.UserMapper;
-import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
+import com.itsu.springbootshiro.shiro.session.RedisSessionDao;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
