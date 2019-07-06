@@ -3,6 +3,7 @@ package com.itsu.springbootshiro.shiro.filter;
 import com.itsu.springbootshiro.entity.User;
 import com.itsu.springbootshiro.mapper.UserMapper;
 import com.itsu.springbootshiro.shiro.sessiondao.RedisSessionDao;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
@@ -32,6 +33,7 @@ public class UserSessionFilter extends AccessControlFilter {
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         Subject subject = getSubject(request, response);
+
         HttpSession session = WebUtils.toHttp(request).getSession();
         User loginUser = (User) session.getAttribute("loginUser");
         String userName = (String) subject.getPrincipal();
@@ -40,8 +42,8 @@ public class UserSessionFilter extends AccessControlFilter {
             session.setAttribute("loginUser", user);
         }
 
-
-        boolean kickoutFlag = session.getAttribute("kickout") == null ? false : true;
+        String kickout = (String) session.getAttribute("kickout");
+        boolean kickoutFlag = StringUtils.isBlank(kickout) ? false : true;
 
         if (kickoutFlag) {
 
@@ -52,10 +54,12 @@ public class UserSessionFilter extends AccessControlFilter {
             Collection<Session> activeSessions = redisSessionDao.getActiveSessions();
             for (Session s : activeSessions) {
                 User u1 = (User) s.getAttribute("loginUser");
-                if (u1 != null && loginUser != null && u1.getUserName().equals(loginUser.getUserName()) && !s.getId().equals(session.getId())) {
-                    s.setAttribute("kickout", "kickout");
+                User u2 = (User) session.getAttribute("loginUser");
+                if (u1 != null && u2 != null && u1.getUserName().equals(u2.getUserName()) && !s.getId().equals(session.getId())) {
+                    s.setAttribute("kickout", "yes");
                     s.setAttribute("kickoutMsg", "您的账号在别处登陆，你被迫下线。IP=" + request.getRemoteAddr());
-                    return false;
+                    redisSessionDao.update(s);
+                    return true;
                 }
             }
         }

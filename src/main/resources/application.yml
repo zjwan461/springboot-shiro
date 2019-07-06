@@ -29,11 +29,10 @@ spring:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
   redis:
-    port: 6379
+    port: 6666
     database: 0
-    password: 123456
-    #    host: 192.168.152.129  #这里应该写自己的redis服务器地址
-    host: 182.61.43.241
+#    password: 123456
+    host: 192.168.152.129  #这里应该写自己的redis服务器地址
     jedis:
       pool:
         max-active: 10

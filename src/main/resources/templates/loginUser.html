@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>已登录用户管理</title>
+</head>
+<body>
+
+<div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>用户名</th>
+            <th>角色</th>
+            <th>session ID</th>
+            <th>登陆时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <#list loginUsers as item>
+            <tr>
+                <td>${item.userName!}</td>
+                <td>${item.role!}</td>
+                <td>${item.sessionId!}</td>
+                <td>${item.login_time?string("yyyy-MM-dd HH:mm:ss")}</td>
+                <td>
+                    <#if item.userName == Session.loginUser.userName>
+                        <span style="color: blue">本人登陆</span>
+                        <#else >
+                            <a href="javascript:;" class="kickout">下线</a>
+                    </#if>
+                </td>
+            </tr>
+        </#list>
+        </tbody>
+    </table>
+</div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $(".kickout").on('click',function () {
+            var sessionId = $(this).parent().prev().prev().text();
+            kickout(sessionId);
+        })
+
+
+        function kickout(sessionId) {
+            $.ajax({
+                async: false,
+                dataType: "json",
+                type: "post",
+                url : "/kickout",
+                data : {
+                    "sessionId" : sessionId
+                },
+                success: function (data) {
+                    if (data.status == '200') {
+                        window.location.reload();
+                    }else {
+                        alert(data.message);
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a.responseText);
+
+                }
+            })
+        }
+    })
+</script>
+</html>

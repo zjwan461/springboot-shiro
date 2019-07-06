@@ -11,7 +11,7 @@
     <p>状态码：${Session.loginUser.status!}</p>
     <p>角色名：${Session.loginUser.role.roleName!}</p>
 </div>
-<@shiro.hasRole name="超级管理员">
+<@shiro.hasRole name="super_admin">
     <a href="/session/all">管理已登陆用户</a>
 </@shiro.hasRole>
 <a href="/logout">退出</a>

@@ -50,6 +50,9 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean initShiroFilterFactory() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        Map<String, Filter> filterMap = new HashMap<>();
+        filterMap.put("sessionFilter", initSessionFilter());
+        shiroFilterFactoryBean.setFilters(filterMap);
         shiroFilterFactoryBean.setLoginUrl("/login");
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/500");
         shiroFilterFactoryBean.setSecurityManager(initSecurityManager());
@@ -67,9 +70,6 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/**", "user,sessionFilter");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
-        Map<String, Filter> filterMap = new HashMap<>();
-        filterMap.put("sessionFilter", initSessionFilter());
-        shiroFilterFactoryBean.setFilters(filterMap);
         return shiroFilterFactoryBean;
     }
 

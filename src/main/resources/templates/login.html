@@ -9,7 +9,7 @@
 
 
     <form action="/login.do" method="post">
-        <span style="color: red"><#if kickout=="kickout">${kickoutMsg!}</#if></span>
+        <span style="color: red"><#if kickout=="yes">${kickoutMsg!}</#if></span>
         <div>
             <label for="userName">用户名：</label>
             <input type="text" name="userName" id="userName">

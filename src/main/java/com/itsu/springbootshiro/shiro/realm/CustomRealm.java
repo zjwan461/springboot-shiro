@@ -32,8 +32,6 @@ public class CustomRealm extends AuthorizingRealm {
     @Resource
     private UserMapper userMapper;
 
-    private User user;
-
     /**
      * 授权
      *
@@ -51,7 +49,7 @@ public class CustomRealm extends AuthorizingRealm {
 
     private Set<String> getPermissionsByUserName(String userName) {
         Set<String> perms = new HashSet<>();
-        List<Perm> permsFromDB = user.getRole().getPerms();
+        List<Perm> permsFromDB = getUserByUserName(userName).getRole().getPerms();
         permsFromDB.forEach(perm -> {
             perms.add(perm.getPermName());
         });
@@ -61,7 +59,7 @@ public class CustomRealm extends AuthorizingRealm {
     private Set<String> getRolesByUserName(String userName) {
 
         Set<String> roles = new HashSet<>();
-        String roleName = user.getRole().getRoleName();
+        String roleName = getUserByUserName(userName).getRole().getRoleName();
         roles.add(roleName);
         return roles;
     }
@@ -78,8 +76,11 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String userName = (String) token.getPrincipal();
         User user = getUserByUserName(userName);
-        if (user == null || user.getPassword() == null || !"0".equals(user.getStatus())) {
-            return null;
+        if (user == null) {
+            throw new AuthenticationException("用户名或密码错误");
+        }
+        if (!user.getStatus().equals("0")) {
+            throw new AuthenticationException("账号已被锁定");
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName, user.getPassword(), ByteSourceUtil.bytes(user.getUserName()), getName());
         return authenticationInfo;
@@ -87,7 +88,6 @@ public class CustomRealm extends AuthorizingRealm {
 
     private User getUserByUserName(String userName) {
         User user = userMapper.getUserRolePermByUsername(userName);
-        this.user = user;
         return user;
     }
 

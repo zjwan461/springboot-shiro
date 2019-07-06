@@ -6,6 +6,7 @@ import org.apache.shiro.cache.CacheException;
 import org.springframework.util.SerializationUtils;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -47,7 +48,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
     public V put(K key, V value) throws CacheException {
         String strKey = getKey(key);
         byte[] byteValue = SerializationUtils.serialize(value);
-        redisUtil.set(strKey,byteValue);
+        redisUtil.set(strKey, byteValue);
         redisUtil.expir(strKey, 1800);
         return value;
     }
@@ -65,21 +66,29 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
     @Override
     public void clear() throws CacheException {
+        Set<String> keys = redisUtil.keys("shiro:cache:*");
+        keys.forEach(key -> redisUtil.del(key));
 
     }
 
     @Override
     public int size() {
-        return 0;
+        return redisUtil.keys("shiro:cache:*").size();
     }
 
     @Override
     public Set<K> keys() {
-        return null;
+        return (Set<K>) redisUtil.keys("shiro:cache:*");
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        Set<String> keys = redisUtil.keys("shiro:cache:*");
+        Set<V> sessions = new HashSet<>();
+        keys.forEach(key -> {
+            byte[] valueByt = redisUtil.get(key);
+            sessions.add((V) SerializationUtils.deserialize(valueByt));
+        });
+        return sessions;
     }
 }

@@ -13,8 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author 苏犇
@@ -33,7 +37,7 @@ public class CustomController {
 
     @GetMapping(value = "/login")
     public String toLogin(String kickout, String kickoutMsg, Model model) {
-        if (StringUtils.isNotBlank(kickout) && kickout.equals("kickout")) {
+        if (StringUtils.isNotBlank(kickout) && kickout.equals("yes")) {
             model.addAttribute("kickout", kickout);
             model.addAttribute("kickoutMsg", kickoutMsg);
         }
@@ -68,4 +72,23 @@ public class CustomController {
         return "有admin1角色";
     }
 
+    @GetMapping("/session/all")
+    @RequiresRoles("super_admin")
+    public ModelAndView toLoginUserPage() {
+        Set<Map> allLoginUserInfoList = userService.getAllLoginUserInfoList();
+        ModelAndView view = new ModelAndView("/loginUser");
+        view.addObject("loginUsers", allLoginUserInfoList);
+        return view;
+    }
+
+    @PostMapping("/kickout")
+    @RequiresRoles("super_admin")
+    @ResponseBody
+    public Map kickout(String sessionId) {
+        Map map = new HashMap();
+        userService.kickout(sessionId);
+        map.put("status", "200");
+        map.put("message", "操作成功");
+        return map;
+    }
 }
