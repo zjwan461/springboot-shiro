@@ -3,6 +3,7 @@ package com.itsu.springbootshiro.shiro.filter;
 import com.itsu.springbootshiro.entity.User;
 import com.itsu.springbootshiro.mapper.UserMapper;
 import com.itsu.springbootshiro.shiro.session.RedisSessionDao;
+import com.itsu.springbootshiro.util.IPUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -57,7 +58,7 @@ public class UserSessionFilter extends AccessControlFilter {
                 User u2 = (User) session.getAttribute("loginUser");
                 if (u1 != null && u2 != null && u1.getUserName().equals(u2.getUserName()) && !s.getId().equals(session.getId())) {
                     s.setAttribute("kickout", "yes");
-                    s.setAttribute("kickoutMsg", "您的账号在别处登陆，你被迫下线。IP=" + request.getRemoteAddr());
+                    s.setAttribute("kickoutMsg", "您的账号在别处登陆，你被迫下线。异地登陆地址=" + IPUtil.getAddrJsonFromIp(IPUtil.getIp(WebUtils.toHttp(request))));
                     redisSessionDao.update(s);
                     return true;
                 }

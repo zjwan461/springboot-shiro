@@ -28,7 +28,7 @@ public class UserService {
         Collection<Session> activeSessions = redisSessionDao.getActiveSessions();
         Set<Map> loginUserInfo = new HashSet<>();
         activeSessions.stream().filter(session -> {
-            if (session.getAttribute("loginUser") != null && SecurityUtils.getSubject().isAuthenticated())
+            if (session.getAttribute("loginUser") != null && session.getAttribute("kickout") == null && SecurityUtils.getSubject().isAuthenticated())
                 return true;
             return false;
         }).forEach(session -> {

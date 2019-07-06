@@ -34,7 +34,6 @@ public class SpringbootShiroApplicationTests {
 
     @Test
     public void testMp() {
-
         User user = userMapper.getUserRolePermByUsername("suben");
         System.out.println(JSON.toJSONString(user));
         

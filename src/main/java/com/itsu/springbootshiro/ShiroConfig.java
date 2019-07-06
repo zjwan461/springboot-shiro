@@ -4,10 +4,7 @@ import com.itsu.springbootshiro.shiro.cache.RedisCacheManager;
 import com.itsu.springbootshiro.shiro.filter.UserSessionFilter;
 import com.itsu.springbootshiro.shiro.realm.CustomRealm;
 import com.itsu.springbootshiro.shiro.session.RedisSessionDao;
-import com.itsu.springbootshiro.shiro.session.RedisSessionManager;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -125,18 +122,9 @@ public class ShiroConfig {
     }
 
     @Bean
-    public RedisSessionManager initRedisSessionManager() {
-        RedisSessionManager redisSessionManager = new RedisSessionManager();
-        redisSessionManager.setGlobalSessionTimeout(360000);
-        redisSessionManager.setDeleteInvalidSessions(true);
-        redisSessionManager.setSessionDAO(initRedisSessionDao());
-        return redisSessionManager;
-    }
-
-    @Bean
     public DefaultWebSessionManager initSessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setSessionDAO(initSessionDao());
+        sessionManager.setSessionDAO(initRedisSessionDao());
         sessionManager.setGlobalSessionTimeout(360000);
         sessionManager.setDeleteInvalidSessions(true);
         return sessionManager;
@@ -148,11 +136,11 @@ public class ShiroConfig {
      *
      * @return
      */
-    @Bean(name = "memorySessionDao")
-    public MemorySessionDAO initSessionDao() {
-        MemorySessionDAO sessionDAO = new MemorySessionDAO();
-        return sessionDAO;
-    }
+//    @Bean(name = "memorySessionDao")
+//    public MemorySessionDAO initSessionDao() {
+//        MemorySessionDAO sessionDAO = new MemorySessionDAO();
+//        return sessionDAO;
+//    }
 
     @Bean(name = "redisSessionDao")
     public RedisSessionDao initRedisSessionDao() {
@@ -166,11 +154,11 @@ public class ShiroConfig {
      *
      * @return
      */
-    @Bean
-    public MemoryConstrainedCacheManager initCacheManager() {
-        MemoryConstrainedCacheManager cacheManager = new MemoryConstrainedCacheManager();
-        return cacheManager;
-    }
+//    @Bean
+//    public MemoryConstrainedCacheManager initCacheManager() {
+//        MemoryConstrainedCacheManager cacheManager = new MemoryConstrainedCacheManager();
+//        return cacheManager;
+//    }
 
     @Bean
     public RedisCacheManager initRedisCacheManager() {
